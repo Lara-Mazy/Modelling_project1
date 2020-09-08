@@ -1,0 +1,10 @@
+# Solution for the likelihood development - Tutorial 1
+# Authors : Florence Blondiaux & Antoine de Comite
+
+loglik ratio = N(mu_r,sigma_R)/N(mu_L,sigma_L)
+
+where N(mu_R, sigma_R) = 1/(sqrt(2*pi*sigma_R**2) * exp(-(x-mu_R)**2/(2*sigma_R**2))
+
+After simplification we obtain
+
+log((sigma_L/sigma_R)) + 0.5 * (x-mu_L)**2/sigma_L**2 - 0.5 * (x-mu_R)**2/sigma_R**2

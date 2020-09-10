@@ -1,0 +1,38 @@
+# Correction of the third exercise of tuto1 - Decision making
+# Authors : Florence Blondiaux & Antoine de Comite 
+
+def compute_SPRTT(sigma,true_dist,data,alpha):
+"""
+This function performs the sequential probability ratio test using the threshold stopping criterion
+Authors : Florence Blondiaux & Antoine de Comite 
+
+Inputs :  sigma (float) is the standard deviation of both distribution
+          true_dist (int) is the true distribution 0 or 1
+          data (numpy vector) is the data vector generated from the true distribution (likelihood distribution)
+Output : evidence_history (numpy vector) containing the history of evidence
+         decision (integer) 0 or 1 depending on the most probable decision at the end of trial
+"""
+    muL = -1.0; muR = 1.0
+    pL = stats.norm(loc=muL,scale=sigma)
+    pR = stats.norm(loc=muR,scale=sigma)
+    evidence_history = []
+    current_evidence = 0.0
+    threshold_reached = False
+    # Definition of the threshold level - Because of the logarithmic fct we can use only the absolute value
+    threshold = np.log(alpha/(1-alpha))
+    while not threshold_reached:
+        ll_ratio = np.log(sigma/sigma) + 0.5(data-muR)**2/(sigma**2) - 0.5*(data-muL)**2/(sigma**2)
+        evidence_history.append(ll_ratio+current_evidence)
+        current_evidence = evidence_history[-1]
+        
+        if abs(current_evidence)>threshold:
+            threshold_reached = True
+    evidence_history = np.array(evidence_history)
+    if evidence_history[-1]>0:
+        decision = 1
+    elif evidence_history[-1]<0:
+        decision = 0
+    else:
+        decision = np.random.randint(2)
+    
+    return evidence_history,decision

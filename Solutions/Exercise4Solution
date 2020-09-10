@@ -1,0 +1,21 @@
+# Solution for exercise 4 tutorial 1 - LGBIO2060
+# Authors - Florence Blondiaux & Antoine de Comite 
+
+def sa_tradeoff(alpha_vector,sigma,true_dist=1):
+    length_iter = []
+    for alpha in alpha_vector:
+        current_evidence = 0.0
+        niter = 0
+        threshold_reached = False
+        threshold = np.log(alpha/(1-alpha))
+        while not threshold_reached:
+            ll_ratio = np.log(sigma/sigma) + 0.5(data-muR)**2/(sigma**2) - 0.5*(data-muL)**2/(sigma**2)
+            current_evidence = current_evidence + ll_ratio
+            
+            if abs(current_evidence)>threshold:
+                threshold_reached = True
+            else:
+                niter = niter+1
+        length_iter.append(niter)
+    
+    return length_iter

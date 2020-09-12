@@ -4,7 +4,7 @@
 #                  Function                        #
 ####################################################
 
-def my_gaussian(x_vectormu,sigma):
+def my_gaussian(x_vector,mu,sigma):
   """
   Author: Antoine de Comite 
   This function computes the gaussian distribution characterised by mu & sigma on the set x_vector

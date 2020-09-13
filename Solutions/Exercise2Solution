@@ -1,0 +1,67 @@
+def compute_SPRT_fixedtime(sigma,true_dist,stopTime):
+    """
+    This function performs the sequential probability ratio test using the fixed time stopping criterion
+    Authors : Florence Blondiaux & Antoine de Comite 
+
+    Inputs :  sigma (float) is the standard deviation of both distribution
+              true_dist (int) is the true distribution 0 or 1
+              stopTime (int) number of samples to take before stopping
+    Output : evidence_history (numpy vector) containing the history of evidence
+            decision (integer) 0 or 1 depending on the most probable decision at the end of trial
+    """
+
+    ##########################
+    ##### Your code here #####
+    ##########################
+    muL = -1.0; muR = 1.0
+   
+    # Generate a random sequence of data
+    pL = norm(loc=muL,scale=sigma)
+    pR = norm(loc=muR,scale=sigma)
+    if true_dist == 1:
+      data = pR.rvs(size=stopTime)
+    else:
+      data = pL.rvs(size=stopTime)
+
+    evidence_history = []
+    current_evidence = 0.0
+    for i in range(stopTime):
+        ll_ratio = np.log(sigma/sigma) + 0.5*(data[i]-muL)**2/(sigma**2) - 0.5*(data[i]-muR)**2/(sigma**2)
+        evidence_history.append(ll_ratio+current_evidence)
+        current_evidence = evidence_history[-1]
+    evidence_history = np.array(evidence_history)
+    if evidence_history[-1]>0:
+        decision = 1
+    elif evidence_history[-1]<0:
+        decision = 0
+    else:
+        decision = np.random.randint(2)
+    return evidence_history,decision
+
+
+
+# Simulate 10 trials and plot their evidence history.
+# For the example of solution, sigma was set to 3.5
+np.random.seed(100) 
+
+def simulate_and_plot_SPRT_fixedtime(nb_trials, sigma=3.5, true_dist = 1,stopTime = 150 ):
+    '''
+    Simulate and plot a SPRT for a fixed amount of time given a std.
+    Authors : Florence Blondiaux & Antoine de Comite 
+    Input: nb_trials: Number of simulations to run per stopping time
+          sigma (float) is the standard deviation of both distribution
+          true_dist (int) is the true distribution 0 or 1
+          stopTime (int) number of samples to take before stopping
+
+    '''
+    ##########################
+    ##### Your code here #####
+    ##########################
+    for i in range(nb_trials):
+        evidence, decision = compute_SPRT_fixedtime(sigma,true_dist,stopTime)
+        plt.plot(evidence)
+    plt.xlabel("Time")
+    plt.ylabel("Cumulated log likelihood ratio")
+    plt.plot(np.zeros(len(evidence)),"r--")
+
+simulate_and_plot_SPRT_fixedtime(10)

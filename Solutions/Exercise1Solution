@@ -1,0 +1,34 @@
+#Solution for exercise 1 of tuto 1 - Decision making
+
+####################################################
+#                  Function                        #
+####################################################
+
+def my_gaussian(x_vector,mu,sigma):
+  """
+  Author: Antoine de Comite 
+  This function computes the gaussian distribution characterised by mu & sigma on the set x_vector
+  
+  Inputs : x_vector (numpy array) the set over which you want to compute the gaussian distribution
+           mu (double) mean value of the gaussian distribution
+           sigma (double) standard deviation of the gaussian distribution
+  Outputs: px (numpy array) is the gaussian distribution evaluated over x_vector
+  """
+  
+  px = 1/(np.sqrt(2*np.pi*sigma**2)) *np.exp((-(x_vector-mu)**2)/(2*sigma**2))
+  return px
+  
+  
+  
+####################################################
+#                  Plotting                        #
+####################################################
+x_vector = np.arange(-5,5,0.1)
+mu = 0
+sigma = 1 
+px = my_gaussian(x_vector,mu,sigma)
+
+fig, ax = plt.subplots()
+ax.plot(x_vector,px,'C1')
+ax.set_ylabel('Probability')
+ax.set_xlabel('Position')

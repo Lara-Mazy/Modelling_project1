@@ -1,32 +1,39 @@
-# Correction of the third exercise of tuto1 - Decision making
-# Authors : Florence Blondiaux & Antoine de Comite 
+def compute_SPRT_threshold(sigma,true_dist,alpha):
+    """
+    This function performs the sequential probability ratio test using the threshold stopping criterion
+    Authors : Florence Blondiaux & Antoine de Comite 
 
-def compute_SPRTT(sigma,true_dist,data,alpha):
-"""
-This function performs the sequential probability ratio test using the threshold stopping criterion
-Authors : Florence Blondiaux & Antoine de Comite 
+    Inputs :  sigma (float) is the standard deviation of both distribution
+              true_dist (int) is the true distribution 0 or 1
+              alpha (int): Desired  error rate that we want to accept.
+    Output : evidence_history (numpy vector) containing the history of evidence
+            decision (integer) 0 or 1 depending on the most probable decision at the end of trial
+    """
 
-Inputs :  sigma (float) is the standard deviation of both distribution
-          true_dist (int) is the true distribution 0 or 1
-          data (numpy vector) is the data vector generated from the true distribution (likelihood distribution)
-Output : evidence_history (numpy vector) containing the history of evidence
-         decision (integer) 0 or 1 depending on the most probable decision at the end of trial
-"""
+
+    ##########################
+    ##### Your code here #####
+    ##########################
     muL = -1.0; muR = 1.0
-    pL = stats.norm(loc=muL,scale=sigma)
-    pR = stats.norm(loc=muR,scale=sigma)
+    pL = norm(loc=muL,scale=sigma)
+    pR = norm(loc=muR,scale=sigma)
     evidence_history = []
     current_evidence = 0.0
     threshold_reached = False
     # Definition of the threshold level - Because of the logarithmic fct we can use only the absolute value
     threshold = np.log(alpha/(1-alpha))
     while not threshold_reached:
-        ll_ratio = np.log(sigma/sigma) + 0.5(data-muR)**2/(sigma**2) - 0.5*(data-muL)**2/(sigma**2)
+        if true_dist == 1:
+            data = pR.rvs()
+        else:
+            data = pL.rvs()
+        ll_ratio = np.log(sigma/sigma) - 0.5*(data-muR)**2/(sigma**2) + 0.5*(data-muL)**2/(sigma**2)
         evidence_history.append(ll_ratio+current_evidence)
         current_evidence = evidence_history[-1]
-        
-        if abs(current_evidence)>threshold:
+        if abs(current_evidence)> abs(threshold):
             threshold_reached = True
+
+
     evidence_history = np.array(evidence_history)
     if evidence_history[-1]>0:
         decision = 1
@@ -36,3 +43,33 @@ Output : evidence_history (numpy vector) containing the history of evidence
         decision = np.random.randint(2)
     
     return evidence_history,decision
+
+def simulate_and_plot_SPRT_threshold(nb_trials, sigma = 2.9, true_dist = 1, alpha = 1e-3):
+    '''
+    Simulate and plot a SPRT for a fixed amount of time given a std.
+    Authors : Florence Blondiaux & Antoine de Comite 
+    Input: nb_trials: Number of simulations to run
+           sigma (float) is the standard deviation of both distribution
+           true_dist (int) is the true distribution 0 or 1
+           alpha (int): Desired  error rate that we want to accept.
+    '''
+
+    ##########################
+    ##### Your code here #####
+    ##########################
+    for i in range(nb_trials):
+        evidence, decision = compute_SPRT_threshold(sigma,true_dist,alpha)
+        plt.plot(evidence)
+    plt.xlabel("Time")
+    plt.ylabel("Cumulated log likelihood ratio")
+    axes = plt.gca()
+    _, xmax = axes.get_xlim()
+    threshold = np.log(alpha/(1-alpha))
+    plt.plot(np.zeros(int(xmax)),"r--")
+    plt.plot(np.zeros(int(xmax))+threshold,"r")
+    plt.plot(np.zeros(int(xmax))-threshold,"r")
+
+
+
+np.random.seed(100) 
+simulate_and_plot_SPRT_threshold(10, sigma = 2.9, true_dist = 1, alpha = 1e-3)

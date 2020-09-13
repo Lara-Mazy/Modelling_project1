@@ -1,0 +1,20 @@
+# Part 3 : Drift diffusion model with fixed threshold
+
+
+The thresholding stopping rule define a desire error rate and will continue making measurements until that error rate is reached. Experimental evidence suggested that evidence accumulation and thresholding stopping strategy happens at neuronal level (see [this article](https://www.annualreviews.org/doi/abs/10.1146/annurev.neuro.29.051605.113038?journalCode=neuro) for further reading).
+
+In this exerise, we will use thresholding as our stopping rule and observe the behavior of the DDM. 
+
+With thresholding stopping rule, we define a desired error rate and will continue making measurements until that error is reached. Experimental evidence suggested that evidence accumulation and thresholding stopping strategy happen at neuronal level.
+
+Mathematically speaking, the threshold is defined based on the likelihood ratio that has been computed before. We define the error rate $\alpha$ that we want to accept. Based on the properties of probability, we have the following definition of thresholds:
+
+$$
+\begin{eqnarray}
+th_L = \log \dfrac{\alpha}{1-\alpha} & = & -th_R\\
+th_R = \log \dfrac{1-\alpha}{\alpha} & = & -th_L
+\end{eqnarray}
+$$
+
+Implement the function *threshold_DDM* whose signature is given below :
+

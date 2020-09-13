@@ -1,0 +1,7 @@
+The faster you make a decision, the lower your accuracy often is. This phenomenon is known as the **speed/accuracy tradeoff**. Humans can make this tradeoff in a wide range of situtations as many animal species, including ants, bees, rodents, and monkeys also show similar effects.
+
+To illustrate the speed/accuracy tradeoff under thresholding stopping rule, let's run some simulations under different thresholds and look at how average decision speed (1/length) changes with average decision accuracy. We used speed rater than accuracy because in real experiments, subjects can be incetivized to respond faster or slower, it's much harder to precisely control their deicison time or error threshold.
+
+*     Complete the function simulate_accuracy_vs_threshold to simulate and compute accuracies vs. average decision lengths for a list of error thresholds. You will need to supply code to calculate average decision "speed" from the lengts of trials. You should also calculate the overall accuracy across these trials.
+
+*      We've set up a list of error thresholds. Run repeated simulations and collect average accuracy with average length for each error rate in this list. You should see a positive correlation between length and accuracy.

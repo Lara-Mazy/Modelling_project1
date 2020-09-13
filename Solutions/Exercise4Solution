@@ -1,21 +1,64 @@
-# Solution for exercise 4 tutorial 1 - LGBIO2060
-# Authors - Florence Blondiaux & Antoine de Comite 
+def simulate_accuracy_vs_threshold(sigma, alpha_list, num_sample):
+  """Calculate the average decision accuracy vs. average decision speed by
+  running repeated SPRT simulations with thresholding stopping rule for each
+  threshold.
+  Args:
+      sigma (float): standard deviation for observation model
+      alpha_list (list-like object): a list of error rates alpha to run
+                                          over
+      num_sample (int): number of simulations to run
+  Returns:
+      accuracy_list: a list of average accuracies corresponding to input
+                      `threshold_list`
+      decision_speed_list: a list of average decision speeds
+  """
+  decision_speed_list = []
+  accuracy_list = []
+  for alpha in alpha_list:
+    decision_time_list = []
+    decision_list = []
+    for i in range(num_sample):
+      # run simulation and get decision of current simulation
+      evidence , decision = compute_SPRT_threshold(sigma, 1 ,alpha)
+      decision_time = len(evidence)
+      decision_list.append(decision)
+      decision_time_list.append(decision_time)
 
-def sa_tradeoff(alpha_vector,sigma,true_dist=1):
-    length_iter = []
-    for alpha in alpha_vector:
-        current_evidence = 0.0
-        niter = 0
-        threshold_reached = False
-        threshold = np.log(alpha/(1-alpha))
-        while not threshold_reached:
-            ll_ratio = np.log(sigma/sigma) + 0.5(data-muR)**2/(sigma**2) - 0.5*(data-muL)**2/(sigma**2)
-            current_evidence = current_evidence + ll_ratio
-            
-            if abs(current_evidence)>threshold:
-                threshold_reached = True
-            else:
-                niter = niter+1
-        length_iter.append(niter)
-    
-    return length_iter
+    # Calculate and store average decision speed and accuracy
+    decision_speed = np.mean(1. / np.array(decision_time_list))
+    decision_accuracy = sum(decision_list) / len(decision_list)
+    decision_speed_list.append(decision_speed)
+    accuracy_list.append(decision_accuracy)
+
+  return accuracy_list, decision_speed_list
+
+
+def simulate_and_plot_accuracy_vs_threshold(sigma, threshold_list, num_sample):
+  """Simulate and plot a SPRT for a set of thresholds given a std.
+
+  Args:
+    sigma (float): Standard deviation of the observations.
+    alpha_list (float): List of thresholds for making a decision.
+    num_sample (int): The number of samples to plot.
+  """
+  accuracies, decision_speeds = simulate_accuracy_vs_threshold(sigma,
+                                                               threshold_list,
+                                                               num_sample)
+
+  # Plotting
+  fig, ax = plt.subplots()
+  ax.plot(decision_speeds, accuracies, linestyle="--", marker="o")
+  ax.plot([np.amin(decision_speeds), np.amax(decision_speeds)],
+          [0.5, 0.5], c='red')
+  ax.set_xlabel("Average Decision speed")
+  ax.set_ylabel('Average Accuracy')
+  ax.set_title("Speed/Accuracy Tradeoff")
+  ax.set_ylim(0.45, 1.05)
+
+  plt.show(fig)
+
+np.random.seed(100)
+sigma = 3.75
+num_sample = 200
+alpha_list = np.linspace(0.001,0.5, 9) 
+simulate_and_plot_accuracy_vs_threshold(sigma, alpha_list, num_sample)

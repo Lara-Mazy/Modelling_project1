@@ -1,66 +1,67 @@
-#Solution for exercise 2 of tuto 1 - Decision making
-#Authors : Florence Blondiaux & Antoine de Comite
+def compute_SPRT_fixedtime(sigma,true_dist,stopTime):
+    """
+    This function performs the sequential probability ratio test using the fixed time stopping criterion
+    Authors : Florence Blondiaux & Antoine de Comite 
 
-####################################################
-#                  Function                        #
-####################################################
+    Inputs :  sigma (float) is the standard deviation of both distribution
+              true_dist (int) is the true distribution 0 or 1
+              stopTime (int) number of samples to take before stopping
+    Output : evidence_history (numpy vector) containing the history of evidence
+            decision (integer) 0 or 1 depending on the most probable decision at the end of trial
+    """
 
-def compute_SPRT(sigma,stop_time,true_dist=1):
-  """
-  Computes the time evolution of the likelihood ratio between left & right hypothesis
+    ##########################
+    ##### Your code here #####
+    ##########################
+    muL = -1.0; muR = 1.0
+   
+    # Generate a random sequence of data
+    pL = norm(loc=muL,scale=sigma)
+    pR = norm(loc=muR,scale=sigma)
+    if true_dist == 1:
+      data = pR.rvs(size=stopTime)
+    else:
+      data = pL.rvs(size=stopTime)
 
-  Inputs : 
-    sigma (double) :  standard deviation (noise around the real direction value)
-    true_dist (0 or 1) : Which state is the true state.
-    data (numpy array) : input data
-  Returns : 
-    evidence_history (numpy vector) : the history of cumulated evidence given
-                                      generated data
-    decision (int) : 1 for pR, 0 for pL
-    data (numpy vector) : the generated sequences of data in this trial
-  """
-  muL = -1.0
-  muR = 1.0
+    evidence_history = []
+    current_evidence = 0.0
+    for i in range(stopTime):
+        ll_ratio = np.log(sigma/sigma) + 0.5*(data[i]-muL)**2/(sigma**2) - 0.5*(data[i]-muR)**2/(sigma**2)
+        evidence_history.append(ll_ratio+current_evidence)
+        current_evidence = evidence_history[-1]
+    evidence_history = np.array(evidence_history)
+    if evidence_history[-1]>0:
+        decision = 1
+    elif evidence_history[-1]<0:
+        decision = 0
+    else:
+        decision = np.random.randint(2)
+    return evidence_history,decision
 
-  pL = stats.norm(loc=-1, scale = sigma)
-  pR = stats.norm(loc= 1, scale = sigma)
 
-  
-  # Compute the cumulated evidence
-  # 1. Log likelihood ratio using the solution of the first exercise
 
-  ll_ratio_vec = np.log(sigma/sigma) + 0.5*(data-1)**2/(sigma**2) - 0.5*(data+1)**2/(sigma**2)
+# Simulate 10 trials and plot their evidence history.
+# For the example of solution, sigma was set to 3.5
+np.random.seed(100) 
 
-  evidence_history = np.cumsum(ll_ratio_vec)
-  # Depending on the real direction, we encode the correct decision
-  if evidence_history[-1] >0: 
-    decision = 1
-  elif evidence_history[-1] < 0:
-    decision = 0
-  else:
-    decision = np.random.randint(2)
-  
-  return evidence_history, decision, data
+def simulate_and_plot_SPRT_fixedtime(nb_trials, sigma=3.5, true_dist = 1,stopTime = 150 ):
+    '''
+    Simulate and plot a SPRT for a fixed amount of time given a std.
+    Authors : Florence Blondiaux & Antoine de Comite 
+    Input: nb_trials: Number of simulations to run per stopping time
+          sigma (float) is the standard deviation of both distribution
+          true_dist (int) is the true distribution 0 or 1
+          stopTime (int) number of samples to take before stopping
 
-####################################################
-#                  Tests                           #
-####################################################
+    '''
+    ##########################
+    ##### Your code here #####
+    ##########################
+    for i in range(nb_trials):
+        evidence, decision = compute_SPRT_fixedtime(sigma,true_dist,stopTime)
+        plt.plot(evidence)
+    plt.xlabel("Time")
+    plt.ylabel("Cumulated log likelihood ratio")
+    plt.plot(np.zeros(len(evidence)),"r--")
 
-np.random.seed(1000)
-sigma=3.5
-num_sample=10
-stop_time=150
-
-evidence_history_list = []
-for ii in range(num_samples):
-  evidence_history, decision, data = compute_SPRT(sigma,true_dist,data)
-  evidence_history_list.append(evidence_history)
-  
-fig, ax = plt.subplots()
-ax.plot(np.zeros(np.max(list(map(len,evidence_history_list)))
-for evidences in evidence_history_list:
-  ax.plot(np.arange(len(evidences)),evidences)
-  ax.set_xlabel("Time")
-  ax.set_ylabel("Cumulated log likelihood ratio")
-  ax.set_title("Log likelihood ratio trajectories under the fixed-time condition")
-plt.show(fig)
+simulate_and_plot_SPRT_fixedtime(10)

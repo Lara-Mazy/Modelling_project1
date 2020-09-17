@@ -16,6 +16,7 @@ In order to run the different tutorials, please click on the following links
 |   | Run | View |
 | - | --- | ---- |
 | Tutorial 1 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fblondiaux/LGBIO2060-2020/blob/master/LGBIO2060_TP1.ipynb) | [![View the notebook](https://img.shields.io/badge/render-nbviewer-orange.svg)](https://nbviewer.jupyter.org/github/fblondiaux/LGBIO2060-2020/blob/master/LGBIO2060_TP1.ipynb?flush_cache=true) |
+| Tutorial 2 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fblondiaux/LGBIO2060-2020/blob/master/LGBIO2060_TP2.ipynb) | [![View the notebook](https://img.shields.io/badge/render-nbviewer-orange.svg)](https://nbviewer.jupyter.org/github/fblondiaux/LGBIO2060-2020/blob/master/LGBIO2060_TP2.ipynb?flush_cache=true) | 
 
 
 # Projects

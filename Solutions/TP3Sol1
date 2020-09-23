@@ -1,0 +1,27 @@
+def my_system(nsteps,x0,A,dt,sigma_motor):
+  """
+  my_system is a function that model the time-evolution of a linear dynamical system
+  with state transition matrix A.
+  Inputs : nsteps is the number of time steps to model
+           x0 is the initial state (where we are starting from)
+           A is the state-transition matrix
+           dt is the time step used in the discretization
+  Outputs : state_evolution is a numpy array that contains the time-evolution of 
+            the state vector
+  """
+  
+  state_evolution = np.zeros([len(x0),nsteps+1])
+  state_evolution[:,0] = x0
+  for ii in range(nsteps):
+    state_evolution[:,ii+1] = A @ state_evolution[:,ii] + np.random.randn(1)*sigma_motor
+  return state_evolution
+
+# Run the lines below to test your code
+
+nsteps = 50
+dt = 0.1
+x0 = np.array([0,0]).T
+A = np.array([[1., 1.], [-(2*np.pi/20.)**2., .9]])
+sigma_motor = 0.05
+state_evolution = my_system(nsteps,x0,A,dt,sigma_motor)
+plot_my_system(state_evolution)

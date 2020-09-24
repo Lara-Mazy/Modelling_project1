@@ -1,4 +1,4 @@
-def my_kalman_filter(nsteps,x0,A,H,omega_motor,omega_sensory):
+def my_kalman_filter(nsteps,x0,A,H,omega_motor,omega_sensory,seed=2060):
   """
   my_kalman_filter computes and applies the Kalman filter to the system seen above
   Inputs : nsteps is the number of time steps to model
@@ -11,8 +11,9 @@ def my_kalman_filter(nsteps,x0,A,H,omega_motor,omega_sensory):
              the observation of the state vector : (state size * nsteps)
             estimated_state is a numpy array that contains the time-evolution of 
               the estimation of the state vector : (state size * nsteps)
+            K kalman gains: (state size * state size * nsteps)
   """
-
+  np.random.seed(seed)
 
   K = np.zeros((len(x0),len(x0),nsteps))
   Sigma = np.zeros((len(x0),len(x0),nsteps))
@@ -34,7 +35,7 @@ def my_kalman_filter(nsteps,x0,A,H,omega_motor,omega_sensory):
 
     estimated_state[:,ii+1]= A @ estimated_state[:,ii] + K[:,:,ii] @ (observed_state[:,ii]-H @ estimated_state[:,ii])
 
-  return latent_state,observed_state, estimated_state
+  return latent_state,observed_state, estimated_state, K
 
 
 # Run the lines below to test your code
@@ -43,7 +44,8 @@ def my_kalman_filter(nsteps,x0,A,H,omega_motor,omega_sensory):
 x0 = np.array([1,1]).T
 omega_motor = 0.05 * np.eye(len(x0))
 omega_sensory = 0.02 * np.eye(len(x0))
-latent_state,observed_state, estimated_state = my_kalman_filter(nsteps,x0,A,H,omega_motor,omega_sensory)
+latent_state,observed_state, estimated_state, K = my_kalman_filter(nsteps,x0,A,H,omega_motor,omega_sensory)
 # plot --> see function preamble
 # call the function
 plot_my_kalman_filter(latent_state,observed_state, estimated_state)
+
